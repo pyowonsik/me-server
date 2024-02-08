@@ -2,20 +2,13 @@ import { Module } from '@nestjs/common';
 import { DiarysService } from './diarys.service';
 import { DiarysController } from './diarys.controller';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
+import { UsersModule } from 'src/users/users.module';
+import { DiarysModel } from './entity/diarys.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-    type:'postgres',
-    host:'127.0.0.1',
-    port:5432,
-    username: 'postgres',
-    password: 'postgres',
-    database: 'postgres',
-    entities: [],
-    synchronize: true,
-  }),
-    DiarysModule,
+  imports:[
+    TypeOrmModule.forFeature([DiarysModel]),
+    UsersModule,
   ],
   controllers: [DiarysController],
   providers: [DiarysService],
