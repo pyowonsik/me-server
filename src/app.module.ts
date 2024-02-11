@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 import { UsersModel } from './users/entity/users.entity';
 import { DiarysModel } from './diarys/entity/diarys.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
 
@@ -26,7 +27,8 @@ import { DiarysModel } from './diarys/entity/diarys.entity';
   }),
     DiarysModule,
     CommonModule,
-    UsersModule
+    UsersModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
