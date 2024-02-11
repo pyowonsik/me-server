@@ -1,16 +1,19 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { DiarysService } from './diarys.service';
 import { CreatePostDto } from './dto/create-post.dto';
 
 @Controller('diarys')
 export class DiarysController {
-  constructor(private readonly diarysService: DiarysService) {}
+  constructor(
+    private readonly diarysService: DiarysService,
+    ) {}
 
 
   @Get('')
   getDiarys(){
     return this.diarysService.getDiarys();
   }
+
 
   @Post('')
   postDiarys(
@@ -20,4 +23,12 @@ export class DiarysController {
     return this.diarysService.createDiary(email,body);
   }
   
+  @Delete('')
+  deleteDiaryByUser(
+    @Body('email') email : string,
+    @Body('id') id : string,
+  ){
+    return this.diarysService.deleteDiaryByUser(email,id); 
+  }
+
 }

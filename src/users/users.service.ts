@@ -9,16 +9,16 @@ export class UsersService {
 
     constructor ( 
         @InjectRepository(UsersModel) 
-        private readonly usersRepository : Repository<UsersModel>
+        private readonly usersRepository : Repository<UsersModel>,
     ){}
 
 
 
     async getAllUsers() : Promise<UsersModel[]>{
-        const users = await this.usersRepository
-        .createQueryBuilder('user')
-        .leftJoinAndSelect('user.diarys', 'diary')  
-        .getMany();
+        const users = await this.usersRepository.find();
+        // .createQueryBuilder('user')
+        // .leftJoinAndSelect('user.diarys', 'diary')  
+        // .getMany();
         return users;
 
     }
@@ -81,5 +81,18 @@ export class UsersService {
         });
         return findUser.diarys;
     }
+
+    async findUserByEmail(email : string){
+        return await this.usersRepository.findOne({
+            where : { 
+                email : email,
+            },
+            relations : {
+                diarys : true
+            },
+        });
+    }
+
+    
 
 }
