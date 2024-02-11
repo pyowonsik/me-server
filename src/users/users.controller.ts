@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
+import { RegisterUserDto } from 'src/auth/dto/register-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -10,19 +11,12 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
-
-  @Post('')
-  postUser(
-    @Body('nickName') nickName : string,
-    @Body('email') email : string,
-    @Body('password') password : string
-  ){
-    return  this.usersService.createUser({
-      nickName,
-      email,
-      password
-    });
-  }
+  // @Post('')
+  // postUser(
+  //   @Body () body : RegisterUserDto
+  // ){
+  //   return  this.usersService.createUser(body);
+  // }
 
   @Delete('')
   deleteUser(

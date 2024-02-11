@@ -16,15 +16,15 @@ export class AuthService {
 
   // 토큰 헤더 분리
   extractTokenFromHeader(header : string , isBearer : boolean){
-    const splitTokne = header.split(' ');
+    const splitToken = header.split(' ');
     
     const prefix = isBearer ? 'Bearer' : 'Basic';
     
-    if(splitTokne.length !== 2 || splitTokne[0] !== prefix){
+    if(splitToken.length !== 2 || splitToken[0] !== prefix){
       throw new UnauthorizedException('잘못된 유형 토큰입니다.');
     }
     
-    const token = splitTokne[1];
+    const token = splitToken[1];
 
     return token;
   }
@@ -60,21 +60,23 @@ export class AuthService {
   }  
 
   // 토큰 재발급
-  // async rotateToken(token:string , isRefresh : boolean){
+  async rotateToken(token:string , isRefreshToken : boolean){
 
-  //   const decoded = this.jwtService.verify(token,{
-  //     secret : JWT_SECRET
-  //   });
+    const decoded = this.jwtService.verify(token,{
+      secret : JWT_SECRET
+    });
 
-  //   if(decoded.type !== 'isRefresh'){
-  //     throw new UnauthorizedException('토큰 발급은 Refresh 토큰으로만 가능합니다.');
-  //   }
+    if(decoded.type !== 'refresh'){
+      throw new UnauthorizedException('토큰 재발급은 Refresh 토큰으로만 가능합니다.');
+    }
 
-  //   return this.
+    return this.signToken({
+      ...decoded
+    },isRefreshToken);
 
-  // }
+  }
 
-  // 토큰 생성
+  // 토큰 생성 - jwtService.sign 사용 
   signToken(user:Pick<UsersModel,'email' | 'password'>,isRefreshToken : boolean ){
 
     const payload = { 
@@ -105,17 +107,18 @@ export class AuthService {
     if (!existingUser) {
       throw new UnauthorizedException('존재하지 않는 사용자입니다.');
     }
-    const passOk = await bcrypt.compare(user.password,  existingUser.password); 
+    
+    const passOk = await bcrypt.compare(user.password,existingUser.password); 
 
     if(!passOk){
       throw new UnauthorizedException('비밀번호가 틀렸습니다.');
     }
-
+    
     return existingUser;
   }
   
   // 로그인하여 토근 생성
-  async logiWithEmail(user : RegisterUserDto){
+  async logiWithEmail(user : Pick<UsersModel,'email' | 'password'>){
     const existingUser = await this.authenticateWithEmailAndPassword(user);
     return this.loginUser(existingUser);
   }
